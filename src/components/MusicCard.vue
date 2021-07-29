@@ -35,7 +35,11 @@
           </div>
           <!-- Control buttons -->
           <div class="pt-4">
-            <button type="button" class="btn btn-outline-primary float-left">
+            <button
+              type="button"
+              class="btn btn-outline-primary float-left"
+              @click="previousSong"
+            >
               <font-awesome-icon icon="step-backward" size="2x" />
             </button>
             <button
@@ -46,7 +50,11 @@
               <font-awesome-icon icon="play" v-if="!is_playing" size="2x" />
               <font-awesome-icon icon="pause" v-else size="2x" />
             </button>
-            <button type="button" class="btn btn-outline-primary float-right">
+            <button
+              type="button"
+              class="btn btn-outline-primary float-right"
+              @click="nextSong"
+            >
               <font-awesome-icon icon="step-forward" size="2x" />
             </button>
           </div>
@@ -67,6 +75,7 @@ export default {
     };
   },
   methods: {
+    // play and pause song
     playOrPauseSong() {
       if (!this.is_playing) {
         this.$refs.ref_music.play();
@@ -74,6 +83,36 @@ export default {
         this.$refs.ref_music.pause();
       }
       this.is_playing = !this.is_playing;
+    },
+
+    // previous song
+    previousSong() {
+      let previous_song_index = this.song_index - 1;
+      if (previous_song_index < 0) {
+        this.song_index = this.songs.length - 1;
+      } else {
+        this.song_index = previous_song_index;
+      }
+      // load song
+      this.$refs.ref_music.load();
+      if (this.is_playing) {
+        this.$refs.ref_music.play();
+      }
+    },
+
+    // next song
+    nextSong() {
+      let next_song_index = this.song_index + 1;
+      if (next_song_index > this.songs.length - 1) {
+        this.song_index = 0;
+      } else {
+        this.song_index = next_song_index;
+      }
+      // load song
+      this.$refs.ref_music.load();
+      if (this.is_playing) {
+        this.$refs.ref_music.play();
+      }
     },
   },
 };
