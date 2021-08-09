@@ -9,12 +9,12 @@
             id="music_art"
             :src="require(`@/assets/images/${songs[song_index]}.jpg`)"
             alt="music-art"
-            class="img-fluid"
+            class="img-fluid rounded-lg shadow-lg"
             width="300"
             height="200"
           />
           <!-- Audio -->
-          <audio id="music" ref="ref_music">
+          <audio id="music" ref="ref_music" @ended="nextSong">
             <source
               :src="require(`@/assets/music/${songs[song_index]}.mp3`)"
               type="audio/ogg"
@@ -22,7 +22,15 @@
             Your broswer doesn't support the audio element
           </audio>
           <!-- Music Info -->
-          <h5 class="pt-3">{{ songs[song_index] }}</h5>
+          <div class="py-3">
+            <h4>{{ songs[song_index] }}</h4>
+            <p class="text-muted">Artist</p>
+          </div>
+          <!-- Audio Time -->
+          <div class="d-flex justify-content-between">
+            <span id="currentTime">{{ song_current_time }}</span>
+            <span id="songDuration">{{ song_duration }}</span>
+          </div>
           <!-- Progress Bar -->
           <div class="progress">
             <div
@@ -35,28 +43,35 @@
           </div>
           <!-- Control buttons -->
           <div class="pt-4">
-            <button
-              type="button"
-              class="btn btn-outline-primary float-left"
+            <font-awesome-icon
+              icon="step-backward"
+              size="2x"
               @click="previousSong"
-            >
-              <font-awesome-icon icon="step-backward" size="2x" />
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline-primary"
+            />
+            <font-awesome-icon
+              icon="play"
+              v-if="!is_playing"
+              size="2x"
+              class="ml-5"
               @click="playOrPauseSong"
-            >
-              <font-awesome-icon icon="play" v-if="!is_playing" size="2x" />
-              <font-awesome-icon icon="pause" v-else size="2x" />
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline-primary float-right"
+            />
+            <font-awesome-icon
+              icon="pause"
+              v-else
+              size="2x"
+              class="ml-5"
+              @click="playOrPauseSong"
+            />
+            <font-awesome-icon
+              icon="step-forward"
+              size="2x"
+              class="ml-5"
               @click="nextSong"
-            >
-              <font-awesome-icon icon="step-forward" size="2x" />
-            </button>
+            />
+          </div>
+          <!-- Track Numbers -->
+          <div class="pt-4">
+            <p class="text-muted">{{ song_index + 1 }} / {{ songs.length }}</p>
           </div>
         </div>
       </div>
@@ -72,6 +87,8 @@ export default {
       is_playing: false,
       song_index: 0,
       songs: ["hey", "summer", "ukulele"],
+      song_duration: "0:00",
+      song_current_time: "0:00",
     };
   },
   methods: {
