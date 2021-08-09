@@ -14,7 +14,12 @@
             height="200"
           />
           <!-- Audio -->
-          <audio id="music" ref="ref_music" @ended="nextSong">
+          <audio
+            id="music"
+            ref="ref_music"
+            @ended="nextSong"
+            @timeupdate="timeUpdate"
+          >
             <source
               :src="require(`@/assets/music/${songs[song_index]}.mp3`)"
               type="audio/ogg"
@@ -32,11 +37,16 @@
             <span id="songDuration">{{ song_duration }}</span>
           </div>
           <!-- Progress Bar -->
-          <div class="progress">
+          <div
+            class="progress"
+            ref="ref_main_progress"
+            @click="changeCurrentTime($event)"
+          >
             <div
               class="progress-bar"
               role="progressbar"
-              aria-valuenow="0"
+              :style="{ width: progress_width + '%' }"
+              :aria-valuenow="progress_width"
               aria-valuemin="0"
               aria-valuemax="100"
             ></div>
@@ -89,6 +99,7 @@ export default {
       songs: ["hey", "summer", "ukulele"],
       song_duration: "0:00",
       song_current_time: "0:00",
+      progress_width: "0",
     };
   },
   methods: {
@@ -130,6 +141,38 @@ export default {
       if (this.is_playing) {
         this.$refs.ref_music.play();
       }
+    },
+
+    // format time
+    formatTime(currentTime) {
+      if (isNaN(currentTime)) {
+        return "0:00";
+      }
+      let minutes = Math.floor(currentTime / 60);
+      let seconds = Math.floor(currentTime % 60);
+      seconds = seconds >= 10 ? seconds : "0" + (seconds % 60);
+      let formatTime = minutes + ":" + seconds;
+      return formatTime;
+    },
+
+    // time update
+    timeUpdate() {
+      let duration = this.$refs.ref_music.duration;
+      let currentTime = this.$refs.ref_music.currentTime;
+      // progressbar
+      this.progress_width = ((currentTime / duration) * 100).toFixed(2);
+      // song timings
+      this.song_current_time = this.formatTime(parseInt(currentTime));
+      this.song_duration = this.formatTime(duration);
+    },
+
+    // set progressbar on click
+    changeCurrentTime(event) {
+      let duration = this.$refs.ref_music.duration;
+      let main_progress_width = this.$refs.ref_main_progress.clientWidth;
+      let click_offset = event.offsetX;
+      this.$refs.ref_music.currentTime =
+        (click_offset / main_progress_width) * duration;
     },
   },
 };
