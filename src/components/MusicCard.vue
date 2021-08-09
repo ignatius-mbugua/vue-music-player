@@ -7,7 +7,7 @@
           <!-- Image -->
           <img
             id="music_art"
-            :src="require(`@/assets/images/${songs[song_index]}.jpg`)"
+            :src="require(`@/assets/images/${songs[song_index].name}.jpg`)"
             alt="music-art"
             class="img-fluid rounded-lg shadow-lg"
             width="300"
@@ -21,15 +21,15 @@
             @timeupdate="timeUpdate"
           >
             <source
-              :src="require(`@/assets/music/${songs[song_index]}.mp3`)"
+              :src="require(`@/assets/music/${songs[song_index].name}.mp3`)"
               type="audio/ogg"
             />
             Your broswer doesn't support the audio element
           </audio>
           <!-- Music Info -->
           <div class="py-3">
-            <h4>{{ songs[song_index] }}</h4>
-            <p class="text-muted">Artist</p>
+            <h4>{{ songs[song_index].title }}</h4>
+            <p class="text-muted">{{ songs[song_index].artist }}</p>
           </div>
           <!-- Audio Time -->
           <div class="d-flex justify-content-between">
@@ -96,7 +96,58 @@ export default {
     return {
       is_playing: false,
       song_index: 0,
-      songs: ["hey", "summer", "ukulele"],
+      songs: [
+        {
+          title: "Hey",
+          artist: "Benjamin Tissot",
+          name: "hey",
+        },
+        {
+          title: "Summer",
+          artist: "Benjamin Tissot",
+          name: "summer",
+        },
+        {
+          title: "Ukulele",
+          artist: "Benjamin Tissot",
+          name: "ukulele",
+        },
+        {
+          title: "Buddy",
+          artist: "Benjamin Tissot",
+          name: "buddy",
+        },
+        {
+          title: "Energy",
+          artist: "Benjamin Tissot",
+          name: "energy",
+        },
+        {
+          title: "Evolution",
+          artist: "Benjamin Tissot",
+          name: "evolution",
+        },
+        {
+          title: "Funny Song",
+          artist: "Benjamin Tissot",
+          name: "funnysong",
+        },
+        {
+          title: "Happy Rock",
+          artist: "Benjamin Tissot",
+          name: "happyrock",
+        },
+        {
+          title: "Moose",
+          artist: "Benjamin Tissot",
+          name: "moose",
+        },
+        {
+          title: "Sunny",
+          artist: "Benjamin Tissot",
+          name: "sunny",
+        },
+      ],
       song_duration: "0:00",
       song_current_time: "0:00",
       progress_width: "0",
@@ -123,6 +174,7 @@ export default {
       }
       // load song
       this.$refs.ref_music.load();
+      this.progress_width = 0;
       if (this.is_playing) {
         this.$refs.ref_music.play();
       }
@@ -138,6 +190,7 @@ export default {
       }
       // load song
       this.$refs.ref_music.load();
+      this.progress_width = 0;
       if (this.is_playing) {
         this.$refs.ref_music.play();
       }
